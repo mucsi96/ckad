@@ -130,5 +130,29 @@
     "category": "Core Concepts - 13%",
     "front": "Print all environment variables inside a running pod",
     "back": "```bash\nkubectl exec -it nginx -- env\n```\n\nRuns `env` inside the container. Handy to verify injected variables from `--env`, ConfigMaps or Secrets.\n\n[Get a Shell to a Running Container](https://kubernetes.io/docs/tasks/debug/debug-application/get-shell-running-container/)"
+  },
+  {
+    "id": "mc-01",
+    "category": "Multi-container pods - 10%",
+    "front": "Define a pod with **two** busybox containers, both running `echo hello; sleep 3600` (edit generated YAML)",
+    "back": "```bash\nvi pod.yaml\n```\n\nGenerate a single-container pod with `kubectl run ... --dry-run=client -o yaml`, then duplicate the entry under `spec.containers` and give it a **different name**:\n\n```yaml\nspec:\n  containers:\n  - args: [/bin/sh, -c, 'echo hello;sleep 3600']\n    image: busybox\n    name: busybox\n  - args: [/bin/sh, -c, 'echo hello;sleep 3600']\n    image: busybox\n    name: busybox2\n```\n\nThere is no imperative flag for multiple containers — you always edit the YAML.\n\n[Pods with multiple containers](https://kubernetes.io/docs/concepts/workloads/pods/#how-pods-manage-multiple-containers)"
+  },
+  {
+    "id": "mc-02",
+    "category": "Multi-container pods - 10%",
+    "front": "Run a command (e.g. `ls`) in a **specific container** of a multi-container pod (pod `busybox`, container `busybox2`)",
+    "back": "```bash\nkubectl exec -it busybox -c busybox2 -- ls\n```\n\n`-c` / `--container` selects the container; without it kubectl uses the first container (or the one annotated as default). Same flag works for an interactive shell (`-- /bin/sh`) and for `kubectl logs`.\n\n[Get a Shell to a Running Container](https://kubernetes.io/docs/tasks/debug/debug-application/get-shell-running-container/)"
+  },
+  {
+    "id": "mc-03",
+    "category": "Multi-container pods - 10%",
+    "front": "Share an `emptyDir` volume between containers of a pod — define the volume and mount it (e.g. at `/usr/share/nginx/html`) (edit generated YAML)",
+    "back": "```bash\nvi pod-init.yaml\n```\n\nDeclare the volume at `spec.volumes` and mount it via `volumeMounts` in every container that needs it (each container can use a different `mountPath`):\n\n```yaml\nspec:\n  containers:\n  - image: nginx\n    name: nginx\n    volumeMounts:\n    - name: vol\n      mountPath: /usr/share/nginx/html\n  volumes:\n  - name: vol\n    emptyDir: {}\n```\n\n`emptyDir` starts empty, lives as long as the pod, and is the standard way to share files between containers of the same pod.\n\n[emptyDir volumes](https://kubernetes.io/docs/concepts/storage/volumes/#emptydir)"
+  },
+  {
+    "id": "mc-04",
+    "category": "Multi-container pods - 10%",
+    "front": "Add a busybox **init container** that runs `echo \"Test\" > /work-dir/index.html` with a volume mounted at `/work-dir` (edit generated YAML)",
+    "back": "```bash\nvi pod-init.yaml\n```\n\nInit containers go under `spec.initContainers` (same schema as regular containers) and run to completion, in order, **before** the app containers start:\n\n```yaml\nspec:\n  initContainers:\n  - args: [/bin/sh, -c, 'echo \"Test\" > /work-dir/index.html']\n    image: busybox\n    name: box\n    volumeMounts:\n    - name: vol\n      mountPath: /work-dir\n```\n\nCombined with a shared `emptyDir` volume, this is the classic pattern for pre-populating content (e.g. an nginx web root).\n\n[Init Containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/)"
   }
 ]

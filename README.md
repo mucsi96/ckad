@@ -16,7 +16,7 @@ Flashcards and a knowledge graph for [CKAD](https://www.cncf.io/certification/ck
 | Category | Status |
 | --- | --- |
 | Core Concepts - 13% | ✅ done (18 exercises, 22 flashcards) |
-| Multi-container pods - 10% | ⬜ todo |
+| Multi-container pods - 10% | ✅ done (2 exercises, 4 new flashcards + 4 reused from Core Concepts) |
 | Pod design - 20% | ⬜ todo |
 | Configuration - 18% | ⬜ todo |
 | Observability - 18% | ⬜ todo |

@@ -292,9 +292,82 @@
       "id": "multi-container-pods",
       "name": "Multi-container pods",
       "weight": "10%",
-      "status": "todo",
+      "status": "complete",
       "sourceFile": "b.multi_container_pods.md",
-      "exercises": []
+      "exercises": [
+        {
+          "id": "mc-e01",
+          "title": "Create a Pod with two containers, both with image busybox and command 'echo hello; sleep 3600'. Connect to the second container and run 'ls'",
+          "tasks": [
+            {
+              "id": "mc-e01-t1",
+              "task": "Generate a single-container pod YAML with the command as a base (dry-run)",
+              "command": "kubectl run busybox --image=busybox --restart=Never -o yaml --dry-run=client -- /bin/sh -c 'echo hello;sleep 3600' > pod.yaml",
+              "flashcardId": "cc-03"
+            },
+            {
+              "id": "mc-e01-t2",
+              "task": "Edit the YAML to add a second busybox container (different name) to the containers list",
+              "command": "vi pod.yaml",
+              "flashcardId": "mc-01"
+            },
+            {
+              "id": "mc-e01-t3",
+              "task": "Create the pod from the manifest",
+              "command": "kubectl create -f pod.yaml",
+              "flashcardId": "cc-04"
+            },
+            {
+              "id": "mc-e01-t4",
+              "task": "Run a command in a specific container of a multi-container pod",
+              "command": "kubectl exec -it busybox -c busybox2 -- ls",
+              "flashcardId": "mc-02"
+            }
+          ]
+        },
+        {
+          "id": "mc-e02",
+          "title": "Create a pod with an nginx container exposed on port 80. Add a busybox init container which writes 'Test' to /work-dir/index.html. Share an emptyDir volume mounted at /usr/share/nginx/html (nginx) and /work-dir (init container). Get the pod IP and wget it from a busybox pod",
+          "tasks": [
+            {
+              "id": "mc-e02-t1",
+              "task": "Generate a base pod YAML with container port 80 (dry-run)",
+              "command": "kubectl run box --image=nginx --restart=Never --port=80 --dry-run=client -o yaml > pod-init.yaml",
+              "flashcardId": "cc-03"
+            },
+            {
+              "id": "mc-e02-t2",
+              "task": "Edit the YAML to add an emptyDir volume and mount it in the nginx container at /usr/share/nginx/html",
+              "command": "vi pod-init.yaml",
+              "flashcardId": "mc-03"
+            },
+            {
+              "id": "mc-e02-t3",
+              "task": "Edit the YAML to add a busybox init container that writes the file and mounts the volume at /work-dir",
+              "command": "vi pod-init.yaml",
+              "flashcardId": "mc-04"
+            },
+            {
+              "id": "mc-e02-t4",
+              "task": "Apply the pod manifest",
+              "command": "kubectl apply -f pod-init.yaml",
+              "flashcardId": "cc-04"
+            },
+            {
+              "id": "mc-e02-t5",
+              "task": "Get the pod IP (wide output)",
+              "command": "kubectl get po -o wide",
+              "flashcardId": "cc-13"
+            },
+            {
+              "id": "mc-e02-t6",
+              "task": "Run a temporary busybox pod and wget the pod IP",
+              "command": "kubectl run box-test --image=busybox --restart=Never -it --rm -- /bin/sh -c \"wget -O- $(kubectl get pod box -o jsonpath='{.status.podIP}')\"",
+              "flashcardId": "cc-19"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "pod-design",
