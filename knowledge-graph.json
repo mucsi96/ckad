@@ -1,0 +1,356 @@
+{
+  "name": "CKAD Knowledge Graph",
+  "source": "https://github.com/dgkanatsios/CKAD-exercises",
+  "description": "Knowledge graph for CKAD exam preparation. Nodes: categories -> exercises -> leaf tasks. Leaf tasks are simple tasks that can be completed with a single command. Each leaf task references a deduplicated flashcard in flashcards.json via flashcardId.",
+  "categories": [
+    {
+      "id": "core-concepts",
+      "name": "Core Concepts",
+      "weight": "13%",
+      "status": "complete",
+      "sourceFile": "a.core_concepts.md",
+      "exercises": [
+        {
+          "id": "cc-e01",
+          "title": "Create a namespace called 'mynamespace' and a pod with image nginx called nginx on this namespace",
+          "tasks": [
+            {
+              "id": "cc-e01-t1",
+              "task": "Create a namespace called mynamespace",
+              "command": "kubectl create namespace mynamespace",
+              "flashcardId": "cc-01"
+            },
+            {
+              "id": "cc-e01-t2",
+              "task": "Create a pod named nginx with image nginx in namespace mynamespace",
+              "command": "kubectl run nginx --image=nginx --restart=Never -n mynamespace",
+              "flashcardId": "cc-02"
+            }
+          ]
+        },
+        {
+          "id": "cc-e02",
+          "title": "Create the pod that was just described using YAML",
+          "tasks": [
+            {
+              "id": "cc-e02-t1",
+              "task": "Generate pod YAML without creating the pod (dry-run)",
+              "command": "kubectl run nginx --image=nginx --restart=Never --dry-run=client -n mynamespace -o yaml > pod.yaml",
+              "flashcardId": "cc-03"
+            },
+            {
+              "id": "cc-e02-t2",
+              "task": "Create a resource from a YAML manifest file",
+              "command": "kubectl create -f pod.yaml",
+              "flashcardId": "cc-04"
+            }
+          ]
+        },
+        {
+          "id": "cc-e03",
+          "title": "Create a busybox pod (using kubectl command) that runs the command 'env'. Run it and see the output",
+          "tasks": [
+            {
+              "id": "cc-e03-t1",
+              "task": "Create a busybox pod that runs the command env",
+              "command": "kubectl run busybox --image=busybox --command --restart=Never -- env",
+              "flashcardId": "cc-05"
+            },
+            {
+              "id": "cc-e03-t2",
+              "task": "See the pod output in its logs",
+              "command": "kubectl logs busybox",
+              "flashcardId": "cc-16"
+            }
+          ]
+        },
+        {
+          "id": "cc-e04",
+          "title": "Create a busybox pod (using YAML) that runs the command 'env'. Run it and see the output",
+          "tasks": [
+            {
+              "id": "cc-e04-t1",
+              "task": "Generate YAML for a pod that runs a command, without creating it",
+              "command": "kubectl run busybox --image=busybox --restart=Never --dry-run=client -o yaml --command -- env > envpod.yaml",
+              "flashcardId": "cc-03"
+            },
+            {
+              "id": "cc-e04-t2",
+              "task": "Apply the manifest and check the logs",
+              "command": "kubectl apply -f envpod.yaml",
+              "flashcardId": "cc-04"
+            }
+          ]
+        },
+        {
+          "id": "cc-e05",
+          "title": "Get the YAML for a new namespace called 'myns' without creating it",
+          "tasks": [
+            {
+              "id": "cc-e05-t1",
+              "task": "Generate namespace YAML without creating it",
+              "command": "kubectl create namespace myns -o yaml --dry-run=client",
+              "flashcardId": "cc-06"
+            }
+          ]
+        },
+        {
+          "id": "cc-e06",
+          "title": "Create the YAML for a new ResourceQuota called 'myrq' with hard limits of 1 CPU, 1G memory and 2 pods without creating it",
+          "tasks": [
+            {
+              "id": "cc-e06-t1",
+              "task": "Generate ResourceQuota YAML with hard limits without creating it",
+              "command": "kubectl create quota myrq --hard=cpu=1,memory=1G,pods=2 --dry-run=client -o yaml",
+              "flashcardId": "cc-07"
+            }
+          ]
+        },
+        {
+          "id": "cc-e07",
+          "title": "Get pods on all namespaces",
+          "tasks": [
+            {
+              "id": "cc-e07-t1",
+              "task": "List pods in all namespaces",
+              "command": "kubectl get po -A",
+              "flashcardId": "cc-08"
+            }
+          ]
+        },
+        {
+          "id": "cc-e08",
+          "title": "Create a pod with image nginx called nginx and expose traffic on port 80",
+          "tasks": [
+            {
+              "id": "cc-e08-t1",
+              "task": "Create a pod declaring container port 80",
+              "command": "kubectl run nginx --image=nginx --restart=Never --port=80",
+              "flashcardId": "cc-09"
+            }
+          ]
+        },
+        {
+          "id": "cc-e09",
+          "title": "Change pod's image to nginx:1.24.0. Observe that the container will be restarted as soon as the image gets pulled",
+          "tasks": [
+            {
+              "id": "cc-e09-t1",
+              "task": "Change the image of a running pod",
+              "command": "kubectl set image pod/nginx nginx=nginx:1.24.0",
+              "flashcardId": "cc-10"
+            },
+            {
+              "id": "cc-e09-t2",
+              "task": "Describe the pod to see events (container killed and recreated)",
+              "command": "kubectl describe po nginx",
+              "flashcardId": "cc-14"
+            },
+            {
+              "id": "cc-e09-t3",
+              "task": "Watch the pod status changes",
+              "command": "kubectl get po nginx -w",
+              "flashcardId": "cc-11"
+            },
+            {
+              "id": "cc-e09-t4",
+              "task": "Check the pod's image using jsonpath",
+              "command": "kubectl get po nginx -o jsonpath='{.spec.containers[].image}{\"\\n\"}'",
+              "flashcardId": "cc-12"
+            }
+          ]
+        },
+        {
+          "id": "cc-e10",
+          "title": "Get nginx pod's ip created in previous step, use a temp busybox image to wget its '/'",
+          "tasks": [
+            {
+              "id": "cc-e10-t1",
+              "task": "Get pod IPs (wide output)",
+              "command": "kubectl get po -o wide",
+              "flashcardId": "cc-13"
+            },
+            {
+              "id": "cc-e10-t2",
+              "task": "Extract the pod IP with jsonpath",
+              "command": "kubectl get pod nginx -o jsonpath='{.status.podIP}'",
+              "flashcardId": "cc-12"
+            },
+            {
+              "id": "cc-e10-t3",
+              "task": "Run a temporary busybox pod and wget the nginx pod IP",
+              "command": "kubectl run busybox --image=busybox --rm -it --restart=Never -- wget -O- 10.1.1.131:80",
+              "flashcardId": "cc-19"
+            }
+          ]
+        },
+        {
+          "id": "cc-e11",
+          "title": "Get pod's YAML",
+          "tasks": [
+            {
+              "id": "cc-e11-t1",
+              "task": "Get the YAML of a running pod",
+              "command": "kubectl get po nginx -o yaml",
+              "flashcardId": "cc-15"
+            }
+          ]
+        },
+        {
+          "id": "cc-e12",
+          "title": "Get information about the pod, including details about potential issues (e.g. pod hasn't started)",
+          "tasks": [
+            {
+              "id": "cc-e12-t1",
+              "task": "Describe the pod (events, potential issues)",
+              "command": "kubectl describe po nginx",
+              "flashcardId": "cc-14"
+            }
+          ]
+        },
+        {
+          "id": "cc-e13",
+          "title": "Get pod logs",
+          "tasks": [
+            {
+              "id": "cc-e13-t1",
+              "task": "Get pod logs",
+              "command": "kubectl logs nginx",
+              "flashcardId": "cc-16"
+            }
+          ]
+        },
+        {
+          "id": "cc-e14",
+          "title": "If pod crashed and restarted, get logs about the previous instance",
+          "tasks": [
+            {
+              "id": "cc-e14-t1",
+              "task": "Get logs of the previous container instance",
+              "command": "kubectl logs nginx -p",
+              "flashcardId": "cc-17"
+            }
+          ]
+        },
+        {
+          "id": "cc-e15",
+          "title": "Execute a simple shell on the nginx pod",
+          "tasks": [
+            {
+              "id": "cc-e15-t1",
+              "task": "Open an interactive shell in a running pod",
+              "command": "kubectl exec -it nginx -- /bin/sh",
+              "flashcardId": "cc-18"
+            }
+          ]
+        },
+        {
+          "id": "cc-e16",
+          "title": "Create a busybox pod that echoes 'hello world' and then exits",
+          "tasks": [
+            {
+              "id": "cc-e16-t1",
+              "task": "Run a one-shot pod with arguments and see its output",
+              "command": "kubectl run busybox --image=busybox -it --restart=Never -- echo 'hello world'",
+              "flashcardId": "cc-20"
+            }
+          ]
+        },
+        {
+          "id": "cc-e17",
+          "title": "Do the same, but have the pod deleted automatically when it's completed",
+          "tasks": [
+            {
+              "id": "cc-e17-t1",
+              "task": "Run a temporary pod that is deleted automatically after it exits",
+              "command": "kubectl run busybox --image=busybox -it --rm --restart=Never -- /bin/sh -c 'echo hello world'",
+              "flashcardId": "cc-19"
+            }
+          ]
+        },
+        {
+          "id": "cc-e18",
+          "title": "Create an nginx pod and set an env value as 'var1=val1'. Check the env value existence within the pod",
+          "tasks": [
+            {
+              "id": "cc-e18-t1",
+              "task": "Create a pod with an environment variable",
+              "command": "kubectl run nginx --image=nginx --restart=Never --env=var1=val1",
+              "flashcardId": "cc-21"
+            },
+            {
+              "id": "cc-e18-t2",
+              "task": "Print environment variables inside a running pod",
+              "command": "kubectl exec -it nginx -- env",
+              "flashcardId": "cc-22"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "multi-container-pods",
+      "name": "Multi-container pods",
+      "weight": "10%",
+      "status": "todo",
+      "sourceFile": "b.multi_container_pods.md",
+      "exercises": []
+    },
+    {
+      "id": "pod-design",
+      "name": "Pod design",
+      "weight": "20%",
+      "status": "todo",
+      "sourceFile": "c.pod_design.md",
+      "exercises": []
+    },
+    {
+      "id": "configuration",
+      "name": "Configuration",
+      "weight": "18%",
+      "status": "todo",
+      "sourceFile": "d.configuration.md",
+      "exercises": []
+    },
+    {
+      "id": "observability",
+      "name": "Observability",
+      "weight": "18%",
+      "status": "todo",
+      "sourceFile": "e.observability.md",
+      "exercises": []
+    },
+    {
+      "id": "services-and-networking",
+      "name": "Services and networking",
+      "weight": "13%",
+      "status": "todo",
+      "sourceFile": "f.services.md",
+      "exercises": []
+    },
+    {
+      "id": "state-persistence",
+      "name": "State persistence",
+      "weight": "8%",
+      "status": "todo",
+      "sourceFile": "g.state.md",
+      "exercises": []
+    },
+    {
+      "id": "helm",
+      "name": "helm",
+      "weight": null,
+      "status": "todo",
+      "sourceFile": "h.helm.md",
+      "exercises": []
+    },
+    {
+      "id": "custom-resource-definitions",
+      "name": "Custom Resource Definitions",
+      "weight": null,
+      "status": "todo",
+      "sourceFile": "i.crd.md",
+      "exercises": []
+    }
+  ]
+}
