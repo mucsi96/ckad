@@ -1,0 +1,107 @@
+[
+  {
+    "front": "Create a namespace called `mynamespace`.",
+    "back": "```bash\nkubectl create namespace mynamespace\n```\n\n**Description:** Creates a new namespace, a virtual cluster used to scope and isolate groups of resources.\n\n[Namespaces](https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/)",
+    "category": "Core Concepts"
+  },
+  {
+    "front": "Get the YAML for a new namespace called `myns` **without** creating it.",
+    "back": "```bash\nkubectl create namespace myns --dry-run=client -o yaml\n```\n\n**Description:** `--dry-run=client` renders the manifest locally without contacting the API server, and `-o yaml` prints it. A fast way to bootstrap a manifest.\n\n[kubectl Cheat Sheet](https://kubernetes.io/docs/reference/kubectl/cheatsheet/)",
+    "category": "Core Concepts"
+  },
+  {
+    "front": "List all pods across **all** namespaces.",
+    "back": "```bash\nkubectl get po -A\n```\n\n**Description:** `-A` (alias for `--all-namespaces`) lists resources cluster-wide instead of only the current namespace.\n\n[kubectl Cheat Sheet](https://kubernetes.io/docs/reference/kubectl/cheatsheet/)",
+    "category": "Core Concepts"
+  },
+  {
+    "front": "Create a pod named `nginx` using image `nginx`.",
+    "back": "```bash\nkubectl run nginx --image=nginx --restart=Never\n```\n\n**Description:** `kubectl run` with `--restart=Never` creates a bare Pod (not a Deployment or Job).\n\n[kubectl run](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#run)",
+    "category": "Core Concepts"
+  },
+  {
+    "front": "Create a pod named `nginx` (image `nginx`) in the `mynamespace` namespace.",
+    "back": "```bash\nkubectl run nginx --image=nginx --restart=Never -n mynamespace\n```\n\n**Description:** `-n` / `--namespace` targets a specific namespace for the created resource.\n\n[Namespaces](https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/)",
+    "category": "Core Concepts"
+  },
+  {
+    "front": "Generate the YAML for an `nginx` pod **without** creating it.",
+    "back": "```bash\nkubectl run nginx --image=nginx --restart=Never --dry-run=client -o yaml\n```\n\n**Description:** Combine `kubectl run` with `--dry-run=client -o yaml` to scaffold a Pod manifest you can save and edit (`> pod.yaml`).\n\n[kubectl Cheat Sheet](https://kubernetes.io/docs/reference/kubectl/cheatsheet/)",
+    "category": "Core Concepts"
+  },
+  {
+    "front": "Create a pod named `nginx` (image `nginx`) and expose container traffic on port 80.",
+    "back": "```bash\nkubectl run nginx --image=nginx --restart=Never --port=80\n```\n\n**Description:** `--port` declares the container port in the Pod spec (does not create a Service).\n\n[kubectl run](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#run)",
+    "category": "Core Concepts"
+  },
+  {
+    "front": "Create an `nginx` pod and set an environment variable `var1=val1`.",
+    "back": "```bash\nkubectl run nginx --image=nginx --restart=Never --env=var1=val1\n```\n\n**Description:** `--env` injects an environment variable into the container; repeat the flag for more variables.\n\n[Define Environment Variables for a Container](https://kubernetes.io/docs/tasks/inject-data-application/define-environment-variable-container/)",
+    "category": "Core Concepts"
+  },
+  {
+    "front": "Create a `busybox` pod that runs the command `env` (and see its output).",
+    "back": "```bash\nkubectl run busybox --image=busybox --command --restart=Never -it --rm -- env\n```\n\n**Description:** Everything after `--` is the container command; `--command` overrides the image entrypoint, `-it` streams output, and `--rm` deletes the pod on exit.\n\n[kubectl run](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#run)",
+    "category": "Core Concepts"
+  },
+  {
+    "front": "Run a `busybox` pod that echoes `hello world`, then have it deleted automatically when it completes.",
+    "back": "```bash\nkubectl run busybox --image=busybox -it --rm --restart=Never -- echo 'hello world'\n```\n\n**Description:** `--rm` removes the pod once it terminates, ideal for throwaway one-off tasks.\n\n[kubectl run](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#run)",
+    "category": "Core Concepts"
+  },
+  {
+    "front": "Get a pod's full YAML definition (pod `nginx`).",
+    "back": "```bash\nkubectl get po nginx -o yaml\n```\n\n**Description:** `-o yaml` outputs the live object, including status and defaulted fields.\n\n[kubectl Cheat Sheet](https://kubernetes.io/docs/reference/kubectl/cheatsheet/)",
+    "category": "Core Concepts"
+  },
+  {
+    "front": "Print only the image of pod `nginx` using JSONPath.",
+    "back": "```bash\nkubectl get po nginx -o jsonpath='{.spec.containers[].image}'\n```\n\n**Description:** `-o jsonpath` extracts a single field from the object, useful for scripting and quick checks.\n\n[JSONPath Support](https://kubernetes.io/docs/reference/kubectl/jsonpath/)",
+    "category": "Core Concepts"
+  },
+  {
+    "front": "Get detailed information and events for pod `nginx` (e.g. why it hasn't started).",
+    "back": "```bash\nkubectl describe po nginx\n```\n\n**Description:** `describe` shows a human-readable summary plus the Events section, the first stop when debugging a stuck pod.\n\n[Application Introspection and Debugging](https://kubernetes.io/docs/tasks/debug/debug-application/debug-running-pod/)",
+    "category": "Core Concepts"
+  },
+  {
+    "front": "Get pod `nginx`'s IP address.",
+    "back": "```bash\nkubectl get po nginx -o wide\n```\n\n**Description:** `-o wide` adds extra columns including the pod IP and the node it runs on.\n\n[kubectl Cheat Sheet](https://kubernetes.io/docs/reference/kubectl/cheatsheet/)",
+    "category": "Core Concepts"
+  },
+  {
+    "front": "Get the logs of pod `nginx`.",
+    "back": "```bash\nkubectl logs nginx\n```\n\n**Description:** Streams stdout/stderr of the (single) container in the pod.\n\n[kubectl logs](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#logs)",
+    "category": "Core Concepts"
+  },
+  {
+    "front": "A pod crashed and restarted — get the logs of its **previous** instance (pod `nginx`).",
+    "back": "```bash\nkubectl logs nginx --previous\n```\n\n**Description:** `--previous` (`-p`) returns logs from the prior terminated container, essential for diagnosing crash loops.\n\n[kubectl logs](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#logs)",
+    "category": "Core Concepts"
+  },
+  {
+    "front": "Open an interactive shell inside pod `nginx`.",
+    "back": "```bash\nkubectl exec -it nginx -- /bin/sh\n```\n\n**Description:** `exec -it` attaches an interactive TTY; everything after `--` is run inside the container.\n\n[Get a Shell to a Running Container](https://kubernetes.io/docs/tasks/debug/debug-application/get-shell-running-container/)",
+    "category": "Core Concepts"
+  },
+  {
+    "front": "Show the environment variables inside running pod `nginx`.",
+    "back": "```bash\nkubectl exec -it nginx -- env\n```\n\n**Description:** Runs `env` once inside the container to verify injected variables without opening a shell.\n\n[Get a Shell to a Running Container](https://kubernetes.io/docs/tasks/debug/debug-application/get-shell-running-container/)",
+    "category": "Core Concepts"
+  },
+  {
+    "front": "Change pod `nginx`'s image to `nginx:1.24.0`.",
+    "back": "```bash\nkubectl set image pod/nginx nginx=nginx:1.24.0\n```\n\n**Description:** Syntax is `pod/POD_NAME CONTAINER_NAME=IMAGE:TAG`; the container is killed and recreated with the new image.\n\n[kubectl set image](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#set)",
+    "category": "Core Concepts"
+  },
+  {
+    "front": "Forward local port 8080 to port 80 of pod `nginx`.",
+    "back": "```bash\nkubectl port-forward pod/nginx 8080:80\n```\n\n**Description:** Tunnels a local port to a port on the pod, letting you reach the app at `localhost:8080` without a Service.\n\n[Use Port Forwarding to Access Applications in a Cluster](https://kubernetes.io/docs/tasks/access-application-cluster/port-forward-access-application-cluster/)",
+    "category": "Core Concepts"
+  },
+  {
+    "front": "Get the YAML for a ResourceQuota `myrq` with hard limits of 1 CPU, 1G memory and 2 pods **without** creating it.",
+    "back": "```bash\nkubectl create quota myrq --hard=cpu=1,memory=1G,pods=2 --dry-run=client -o yaml\n```\n\n**Description:** A ResourceQuota caps aggregate resource consumption in a namespace; `--hard` lists the constraints as comma-separated key=value pairs.\n\n[Resource Quotas](https://kubernetes.io/docs/concepts/policy/resource-quotas/)",
+    "category": "Core Concepts"
+  }
+]
