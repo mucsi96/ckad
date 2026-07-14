@@ -54,6 +54,7 @@ Expected JSON schema:
 ```json
 [
   {
+    "id": "Stable unique id (required)",
     "frontText": "Question (Markdown)",
     "backText": "Answer (Markdown)",
     "category": "Optional category"
