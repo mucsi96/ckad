@@ -6,8 +6,8 @@ Flashcards and a knowledge graph for [CKAD](https://www.cncf.io/certification/ck
 
 - **[knowledge-graph.json](knowledge-graph.json)** — the knowledge graph. Nodes are organized as *category → exercise → leaf task*, where every leaf task is a simple task that can be completed with a single command. Each leaf task references its deduplicated flashcard via `flashcardId` (the same command used across several exercises maps to one card).
 - **[flashcards.json](flashcards.json)** — the deduplicated flashcard list. Each card has:
-  - `front` — task description (markdown)
-  - `back` — the command to execute, a short description, and a link to the official Kubernetes docs (markdown)
+  - `frontText` — task description (markdown)
+  - `backText` — the command to execute, a short description, and a link to the official Kubernetes docs (markdown)
   - `category` — the CKAD curriculum domain
   - `id` — stable id referenced from the knowledge graph
 
