@@ -45,6 +45,18 @@ Flashcards and a knowledge graph for [CKAD](https://www.cncf.io/certification/ck
 > helm
 > Custom Resource Definitions). On the back I want to see the answer command I should execute. Description and some Link to Kubernetes official docs.
 >
-> For now deal only with category "Core Concepts".
+> For now deal only with category "Multi-container pods".
 >
-> Add this prompt itself to readme for reference and follow up.
+> Update status in readme.
+
+Expected JSON schema:
+
+```json
+[
+  {
+    "frontText": "Question (Markdown)",
+    "backText": "Answer (Markdown)",
+    "category": "Optional category"
+  }
+]
+```
