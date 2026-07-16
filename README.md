@@ -17,7 +17,7 @@ Flashcards and a knowledge graph for [CKAD](https://www.cncf.io/certification/ck
 | --- | --- |
 | Core Concepts - 13% | ✅ done (18 exercises, 22 flashcards) |
 | Multi-container pods - 10% | ✅ done (2 exercises, 4 new flashcards + 4 reused from Core Concepts) |
-| Pod design - 20% | ⬜ todo |
+| Pod design - 20% | ✅ done (51 exercises, 41 new flashcards + 7 reused from Core Concepts) |
 | Configuration - 18% | ⬜ todo |
 | Observability - 18% | ⬜ todo |
 | Services and networking - 13% | ⬜ todo |
@@ -45,7 +45,7 @@ Flashcards and a knowledge graph for [CKAD](https://www.cncf.io/certification/ck
 > helm
 > Custom Resource Definitions). On the back I want to see the answer command I should execute. Description and some Link to Kubernetes official docs.
 >
-> For now deal only with category "Multi-container pods".
+> For now deal only with category "Pod design".
 >
 > Update status in readme.
 
