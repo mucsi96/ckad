@@ -373,9 +373,907 @@
       "id": "pod-design",
       "name": "Pod design",
       "weight": "20%",
-      "status": "todo",
+      "status": "complete",
       "sourceFile": "c.pod_design.md",
-      "exercises": []
+      "exercises": [
+        {
+          "id": "pd-e01",
+          "section": "Labels and Annotations",
+          "title": "Create 3 pods with names nginx1, nginx2, nginx3. All of them should have the label app=v1",
+          "tasks": [
+            {
+              "id": "pd-e01-t1",
+              "task": "Create pods nginx1, nginx2, nginx3 with label app=v1",
+              "command": "kubectl run nginx1 --image=nginx --restart=Never --labels=app=v1",
+              "flashcardId": "pd-01"
+            }
+          ]
+        },
+        {
+          "id": "pd-e02",
+          "section": "Labels and Annotations",
+          "title": "Show all labels of the pods",
+          "tasks": [
+            {
+              "id": "pd-e02-t1",
+              "task": "List pods with their labels",
+              "command": "kubectl get po --show-labels",
+              "flashcardId": "pd-02"
+            }
+          ]
+        },
+        {
+          "id": "pd-e03",
+          "section": "Labels and Annotations",
+          "title": "Change the labels of pod 'nginx2' to be app=v2",
+          "tasks": [
+            {
+              "id": "pd-e03-t1",
+              "task": "Overwrite the app label of pod nginx2 to v2",
+              "command": "kubectl label po nginx2 app=v2 --overwrite",
+              "flashcardId": "pd-03"
+            }
+          ]
+        },
+        {
+          "id": "pd-e04",
+          "section": "Labels and Annotations",
+          "title": "Get the label 'app' for the pods (show a column with APP labels)",
+          "tasks": [
+            {
+              "id": "pd-e04-t1",
+              "task": "List pods with a column for the app label",
+              "command": "kubectl get po -L app",
+              "flashcardId": "pd-04"
+            }
+          ]
+        },
+        {
+          "id": "pd-e05",
+          "section": "Labels and Annotations",
+          "title": "Get only the 'app=v2' pods",
+          "tasks": [
+            {
+              "id": "pd-e05-t1",
+              "task": "Filter pods by label app=v2",
+              "command": "kubectl get po -l app=v2",
+              "flashcardId": "pd-05"
+            }
+          ]
+        },
+        {
+          "id": "pd-e06",
+          "section": "Labels and Annotations",
+          "title": "Get 'app=v2' and not 'tier=frontend' pods",
+          "tasks": [
+            {
+              "id": "pd-e06-t1",
+              "task": "Filter pods by combined selector app=v2 AND tier!=frontend",
+              "command": "kubectl get po -l app=v2,tier!=frontend",
+              "flashcardId": "pd-06"
+            }
+          ]
+        },
+        {
+          "id": "pd-e07",
+          "section": "Labels and Annotations",
+          "title": "Add a new label tier=web to all pods having 'app=v2' or 'app=v1' labels",
+          "tasks": [
+            {
+              "id": "pd-e07-t1",
+              "task": "Label all pods matching a set-based selector",
+              "command": "kubectl label po -l \"app in(v1,v2)\" tier=web",
+              "flashcardId": "pd-07"
+            }
+          ]
+        },
+        {
+          "id": "pd-e08",
+          "section": "Labels and Annotations",
+          "title": "Add an annotation 'owner: marketing' to all pods having 'app=v2' label",
+          "tasks": [
+            {
+              "id": "pd-e08-t1",
+              "task": "Annotate all pods matching a label selector",
+              "command": "kubectl annotate po -l \"app=v2\" owner=marketing",
+              "flashcardId": "pd-08"
+            }
+          ]
+        },
+        {
+          "id": "pd-e09",
+          "section": "Labels and Annotations",
+          "title": "Remove the 'app' label from the pods we created before",
+          "tasks": [
+            {
+              "id": "pd-e09-t1",
+              "task": "Remove the app label from pods nginx1-3",
+              "command": "kubectl label po nginx{1..3} app-",
+              "flashcardId": "pd-09"
+            }
+          ]
+        },
+        {
+          "id": "pd-e10",
+          "section": "Labels and Annotations",
+          "title": "Annotate pods nginx1, nginx2, nginx3 with \"description='my description'\" value",
+          "tasks": [
+            {
+              "id": "pd-e10-t1",
+              "task": "Annotate pods nginx1-3 with a description",
+              "command": "kubectl annotate po nginx1 nginx2 nginx3 description='my description'",
+              "flashcardId": "pd-08"
+            }
+          ]
+        },
+        {
+          "id": "pd-e11",
+          "section": "Labels and Annotations",
+          "title": "Check the annotations for pod nginx1",
+          "tasks": [
+            {
+              "id": "pd-e11-t1",
+              "task": "List the annotations of pod nginx1",
+              "command": "kubectl annotate pod nginx1 --list",
+              "flashcardId": "pd-10"
+            }
+          ]
+        },
+        {
+          "id": "pd-e12",
+          "section": "Labels and Annotations",
+          "title": "Remove the annotations for these three pods",
+          "tasks": [
+            {
+              "id": "pd-e12-t1",
+              "task": "Remove the description and owner annotations from pods nginx1-3",
+              "command": "kubectl annotate po nginx{1..3} description- owner-",
+              "flashcardId": "pd-11"
+            }
+          ]
+        },
+        {
+          "id": "pd-e13",
+          "section": "Labels and Annotations",
+          "title": "Remove these pods to have a clean state in your cluster",
+          "tasks": [
+            {
+              "id": "pd-e13-t1",
+              "task": "Delete pods nginx1-3 with one command",
+              "command": "kubectl delete po nginx{1..3}",
+              "flashcardId": "pd-12"
+            }
+          ]
+        },
+        {
+          "id": "pd-e14",
+          "section": "Pod Placement",
+          "title": "Create a pod that will be deployed to a Node that has the label 'accelerator=nvidia-tesla-p100'",
+          "tasks": [
+            {
+              "id": "pd-e14-t1",
+              "task": "Add the accelerator label to a node",
+              "command": "kubectl label nodes <node-name> accelerator=nvidia-tesla-p100",
+              "flashcardId": "pd-13"
+            },
+            {
+              "id": "pd-e14-t2",
+              "task": "Edit the pod YAML to add a nodeSelector for the accelerator label",
+              "command": "vi pod.yaml",
+              "flashcardId": "pd-14"
+            },
+            {
+              "id": "pd-e14-t3",
+              "task": "Find where nodeSelector goes in the pod spec",
+              "command": "kubectl explain po.spec",
+              "flashcardId": "pd-16"
+            },
+            {
+              "id": "pd-e14-t4",
+              "task": "Alternative: edit the pod YAML to use required node affinity instead of nodeSelector",
+              "command": "vi pod.yaml",
+              "flashcardId": "pd-15"
+            }
+          ]
+        },
+        {
+          "id": "pd-e15",
+          "section": "Pod Placement",
+          "title": "Create a pod that will be placed on node 'node01' using nodeName",
+          "tasks": [
+            {
+              "id": "pd-e15-t1",
+              "task": "Edit the pod YAML to set spec.nodeName to node01",
+              "command": "vi pod.yaml",
+              "flashcardId": "pd-17"
+            },
+            {
+              "id": "pd-e15-t2",
+              "task": "Verify which node the pod landed on",
+              "command": "kubectl get pod nodename-pod -o wide",
+              "flashcardId": "cc-13"
+            }
+          ]
+        },
+        {
+          "id": "pd-e16",
+          "section": "Pod Placement",
+          "title": "Taint a node with key 'tier' and value 'frontend' with the effect 'NoSchedule'. Then, create a pod that tolerates this taint",
+          "tasks": [
+            {
+              "id": "pd-e16-t1",
+              "task": "Taint the node (and view taints with kubectl describe node)",
+              "command": "kubectl taint node node1 tier=frontend:NoSchedule",
+              "flashcardId": "pd-18"
+            },
+            {
+              "id": "pd-e16-t2",
+              "task": "Edit the pod YAML to add a toleration for the taint",
+              "command": "vi pod.yaml",
+              "flashcardId": "pd-19"
+            },
+            {
+              "id": "pd-e16-t3",
+              "task": "Create the pod from the manifest",
+              "command": "kubectl create -f pod.yaml",
+              "flashcardId": "cc-04"
+            }
+          ]
+        },
+        {
+          "id": "pd-e17",
+          "section": "Pod Placement",
+          "title": "Create a pod that will be placed on node 'controlplane'. Use nodeSelector and tolerations",
+          "tasks": [
+            {
+              "id": "pd-e17-t1",
+              "task": "Edit the pod YAML to add nodeSelector kubernetes.io/hostname: controlplane",
+              "command": "vi pod.yaml",
+              "flashcardId": "pd-14"
+            },
+            {
+              "id": "pd-e17-t2",
+              "task": "Edit the pod YAML to tolerate the control-plane taint (operator Exists)",
+              "command": "vi pod.yaml",
+              "flashcardId": "pd-19"
+            },
+            {
+              "id": "pd-e17-t3",
+              "task": "Create the pod from the manifest",
+              "command": "kubectl create -f pod.yaml",
+              "flashcardId": "cc-04"
+            }
+          ]
+        },
+        {
+          "id": "pd-e18",
+          "section": "Deployments",
+          "title": "Create a deployment with image nginx:1.18.0, called nginx, having 2 replicas, defining port 80 as the port that this container exposes",
+          "tasks": [
+            {
+              "id": "pd-e18-t1",
+              "task": "Create the deployment imperatively with replicas and port",
+              "command": "kubectl create deploy nginx --image=nginx:1.18.0 --replicas=2 --port=80",
+              "flashcardId": "pd-20"
+            }
+          ]
+        },
+        {
+          "id": "pd-e19",
+          "section": "Deployments",
+          "title": "View the YAML of this deployment",
+          "tasks": [
+            {
+              "id": "pd-e19-t1",
+              "task": "Get the deployment YAML",
+              "command": "kubectl get deploy nginx -o yaml",
+              "flashcardId": "pd-21"
+            }
+          ]
+        },
+        {
+          "id": "pd-e20",
+          "section": "Deployments",
+          "title": "View the YAML of the replica set that was created by this deployment",
+          "tasks": [
+            {
+              "id": "pd-e20-t1",
+              "task": "Find the replica set of the deployment by label",
+              "command": "kubectl get rs -l app=nginx",
+              "flashcardId": "pd-22"
+            },
+            {
+              "id": "pd-e20-t2",
+              "task": "Get the replica set YAML",
+              "command": "kubectl get rs nginx-7bf7478b77 -o yaml",
+              "flashcardId": "pd-22"
+            }
+          ]
+        },
+        {
+          "id": "pd-e21",
+          "section": "Deployments",
+          "title": "Get the YAML for one of the pods",
+          "tasks": [
+            {
+              "id": "pd-e21-t1",
+              "task": "Find the deployment's pods by label",
+              "command": "kubectl get po -l app=nginx",
+              "flashcardId": "pd-05"
+            },
+            {
+              "id": "pd-e21-t2",
+              "task": "Get the pod YAML",
+              "command": "kubectl get po nginx-7bf7478b77-gjzp8 -o yaml",
+              "flashcardId": "cc-15"
+            }
+          ]
+        },
+        {
+          "id": "pd-e22",
+          "section": "Deployments",
+          "title": "Check how the deployment rollout is going",
+          "tasks": [
+            {
+              "id": "pd-e22-t1",
+              "task": "Check the rollout status",
+              "command": "kubectl rollout status deploy nginx",
+              "flashcardId": "pd-23"
+            }
+          ]
+        },
+        {
+          "id": "pd-e23",
+          "section": "Deployments",
+          "title": "Update the nginx image to nginx:1.19.8",
+          "tasks": [
+            {
+              "id": "pd-e23-t1",
+              "task": "Set a new image on the deployment",
+              "command": "kubectl set image deploy nginx nginx=nginx:1.19.8",
+              "flashcardId": "pd-24"
+            }
+          ]
+        },
+        {
+          "id": "pd-e24",
+          "section": "Deployments",
+          "title": "Check the rollout history and confirm that the replicas are OK",
+          "tasks": [
+            {
+              "id": "pd-e24-t1",
+              "task": "View the rollout history",
+              "command": "kubectl rollout history deploy nginx",
+              "flashcardId": "pd-25"
+            },
+            {
+              "id": "pd-e24-t2",
+              "task": "Check that a new replica set has been created",
+              "command": "kubectl get rs",
+              "flashcardId": "pd-22"
+            }
+          ]
+        },
+        {
+          "id": "pd-e25",
+          "section": "Deployments",
+          "title": "Undo the latest rollout and verify that new pods have the old image (nginx:1.18.0)",
+          "tasks": [
+            {
+              "id": "pd-e25-t1",
+              "task": "Undo the latest rollout",
+              "command": "kubectl rollout undo deploy nginx",
+              "flashcardId": "pd-26"
+            },
+            {
+              "id": "pd-e25-t2",
+              "task": "Verify the image of a running pod",
+              "command": "kubectl describe po <pod-name> | grep -i image",
+              "flashcardId": "cc-14"
+            }
+          ]
+        },
+        {
+          "id": "pd-e26",
+          "section": "Deployments",
+          "title": "Do an on-purpose update of the deployment with a wrong image nginx:1.91",
+          "tasks": [
+            {
+              "id": "pd-e26-t1",
+              "task": "Set a wrong image on the deployment",
+              "command": "kubectl set image deploy nginx nginx=nginx:1.91",
+              "flashcardId": "pd-24"
+            }
+          ]
+        },
+        {
+          "id": "pd-e27",
+          "section": "Deployments",
+          "title": "Verify that something's wrong with the rollout",
+          "tasks": [
+            {
+              "id": "pd-e27-t1",
+              "task": "Check rollout status (pods will show ErrImagePull / ImagePullBackOff)",
+              "command": "kubectl rollout status deploy nginx",
+              "flashcardId": "pd-23"
+            }
+          ]
+        },
+        {
+          "id": "pd-e28",
+          "section": "Deployments",
+          "title": "Return the deployment to the second revision (number 2) and verify the image is nginx:1.19.8",
+          "tasks": [
+            {
+              "id": "pd-e28-t1",
+              "task": "Roll back to a specific revision",
+              "command": "kubectl rollout undo deploy nginx --to-revision=2",
+              "flashcardId": "pd-26"
+            },
+            {
+              "id": "pd-e28-t2",
+              "task": "Verify the deployment image",
+              "command": "kubectl describe deploy nginx | grep Image:",
+              "flashcardId": "cc-14"
+            }
+          ]
+        },
+        {
+          "id": "pd-e29",
+          "section": "Deployments",
+          "title": "Check the details of the fourth revision (number 4)",
+          "tasks": [
+            {
+              "id": "pd-e29-t1",
+              "task": "View the details of a specific rollout revision",
+              "command": "kubectl rollout history deploy nginx --revision=4",
+              "flashcardId": "pd-25"
+            }
+          ]
+        },
+        {
+          "id": "pd-e30",
+          "section": "Deployments",
+          "title": "Scale the deployment to 5 replicas",
+          "tasks": [
+            {
+              "id": "pd-e30-t1",
+              "task": "Scale the deployment",
+              "command": "kubectl scale deploy nginx --replicas=5",
+              "flashcardId": "pd-27"
+            }
+          ]
+        },
+        {
+          "id": "pd-e31",
+          "section": "Deployments",
+          "title": "Autoscale the deployment, pods between 5 and 10, targeting CPU utilization at 80%",
+          "tasks": [
+            {
+              "id": "pd-e31-t1",
+              "task": "Create a horizontal pod autoscaler for the deployment",
+              "command": "kubectl autoscale deploy nginx --min=5 --max=10 --cpu-percent=80",
+              "flashcardId": "pd-28"
+            },
+            {
+              "id": "pd-e31-t2",
+              "task": "View the HPA",
+              "command": "kubectl get hpa nginx",
+              "flashcardId": "pd-28"
+            }
+          ]
+        },
+        {
+          "id": "pd-e32",
+          "section": "Deployments",
+          "title": "Pause the rollout of the deployment",
+          "tasks": [
+            {
+              "id": "pd-e32-t1",
+              "task": "Pause the rollout",
+              "command": "kubectl rollout pause deploy nginx",
+              "flashcardId": "pd-29"
+            }
+          ]
+        },
+        {
+          "id": "pd-e33",
+          "section": "Deployments",
+          "title": "Update the image to nginx:1.19.9 and check that there's nothing going on, since we paused the rollout",
+          "tasks": [
+            {
+              "id": "pd-e33-t1",
+              "task": "Set the new image (no rollout is triggered while paused)",
+              "command": "kubectl set image deploy nginx nginx=nginx:1.19.9",
+              "flashcardId": "pd-24"
+            },
+            {
+              "id": "pd-e33-t2",
+              "task": "Check that the rollout history shows no new revision",
+              "command": "kubectl rollout history deploy nginx",
+              "flashcardId": "pd-25"
+            }
+          ]
+        },
+        {
+          "id": "pd-e34",
+          "section": "Deployments",
+          "title": "Resume the rollout and check that the nginx:1.19.9 image has been applied",
+          "tasks": [
+            {
+              "id": "pd-e34-t1",
+              "task": "Resume the paused rollout",
+              "command": "kubectl rollout resume deploy nginx",
+              "flashcardId": "pd-30"
+            },
+            {
+              "id": "pd-e34-t2",
+              "task": "Check the latest revision in the rollout history",
+              "command": "kubectl rollout history deploy nginx --revision=6",
+              "flashcardId": "pd-25"
+            }
+          ]
+        },
+        {
+          "id": "pd-e35",
+          "section": "Deployments",
+          "title": "Delete the deployment and the horizontal pod autoscaler you created",
+          "tasks": [
+            {
+              "id": "pd-e35-t1",
+              "task": "Delete the deployment and the HPA with one command",
+              "command": "kubectl delete deploy/nginx hpa/nginx",
+              "flashcardId": "pd-12"
+            }
+          ]
+        },
+        {
+          "id": "pd-e36",
+          "section": "Deployments",
+          "title": "Implement canary deployment by running two instances of nginx marked as version=v1 and version=v2 so that the load is balanced at 75%-25% ratio",
+          "tasks": [
+            {
+              "id": "pd-e36-t1",
+              "task": "Write the v1 deployment (3 replicas, labels app=my-app + version=v1) and the service selecting only app=my-app",
+              "command": "vi canary.yaml",
+              "flashcardId": "pd-31"
+            },
+            {
+              "id": "pd-e36-t2",
+              "task": "Test the service from a temporary busybox pod",
+              "command": "kubectl run -it --rm --restart=Never busybox --image=gcr.io/google-containers/busybox --command -- wget -qO- my-app-svc",
+              "flashcardId": "cc-19"
+            },
+            {
+              "id": "pd-e36-t3",
+              "task": "Write and deploy the v2 deployment (1 replica, labels app=my-app + version=v2)",
+              "command": "vi canary.yaml",
+              "flashcardId": "pd-31"
+            },
+            {
+              "id": "pd-e36-t4",
+              "task": "Observe the load balancing across versions from a temporary pod",
+              "command": "kubectl run -it --rm --restart=Never busybox --image=gcr.io/google-containers/busybox -- /bin/sh -c 'while sleep 1; do wget -qO- my-app-svc; done'",
+              "flashcardId": "cc-19"
+            },
+            {
+              "id": "pd-e36-t5",
+              "task": "Promote v2 by scaling it up",
+              "command": "kubectl scale --replicas=4 deploy my-app-v2",
+              "flashcardId": "pd-27"
+            },
+            {
+              "id": "pd-e36-t6",
+              "task": "Shut down v1",
+              "command": "kubectl delete deploy my-app-v1",
+              "flashcardId": "pd-12"
+            }
+          ]
+        },
+        {
+          "id": "pd-e37",
+          "section": "Jobs",
+          "title": "Create a job named pi with image perl:5.34 that runs the command with arguments \"perl -Mbignum=bpi -wle 'print bpi(2000)'\"",
+          "tasks": [
+            {
+              "id": "pd-e37-t1",
+              "task": "Create the job imperatively",
+              "command": "kubectl create job pi --image=perl:5.34 -- perl -Mbignum=bpi -wle 'print bpi(2000)'",
+              "flashcardId": "pd-32"
+            }
+          ]
+        },
+        {
+          "id": "pd-e38",
+          "section": "Jobs",
+          "title": "Wait till it's done, get the output",
+          "tasks": [
+            {
+              "id": "pd-e38-t1",
+              "task": "Wait for the job to complete",
+              "command": "kubectl wait --for=condition=complete --timeout=300s job pi",
+              "flashcardId": "pd-33"
+            },
+            {
+              "id": "pd-e38-t2",
+              "task": "Get the job output from its logs",
+              "command": "kubectl logs job/pi",
+              "flashcardId": "pd-34"
+            },
+            {
+              "id": "pd-e38-t3",
+              "task": "Delete the job",
+              "command": "kubectl delete job pi",
+              "flashcardId": "pd-12"
+            }
+          ]
+        },
+        {
+          "id": "pd-e39",
+          "section": "Jobs",
+          "title": "Create a job with the image busybox that executes the command 'echo hello;sleep 30;echo world'",
+          "tasks": [
+            {
+              "id": "pd-e39-t1",
+              "task": "Create the job with a shell command",
+              "command": "kubectl create job busybox --image=busybox -- /bin/sh -c 'echo hello;sleep 30;echo world'",
+              "flashcardId": "pd-32"
+            }
+          ]
+        },
+        {
+          "id": "pd-e40",
+          "section": "Jobs",
+          "title": "Follow the logs for the pod (you'll wait for 30 seconds)",
+          "tasks": [
+            {
+              "id": "pd-e40-t1",
+              "task": "Follow the logs of the job's pod",
+              "command": "kubectl logs busybox-ptx58 -f",
+              "flashcardId": "cc-16"
+            }
+          ]
+        },
+        {
+          "id": "pd-e41",
+          "section": "Jobs",
+          "title": "See the status of the job, describe it and see the logs",
+          "tasks": [
+            {
+              "id": "pd-e41-t1",
+              "task": "See the job status",
+              "command": "kubectl get jobs",
+              "flashcardId": "pd-33"
+            },
+            {
+              "id": "pd-e41-t2",
+              "task": "Describe the job",
+              "command": "kubectl describe jobs busybox",
+              "flashcardId": "cc-14"
+            },
+            {
+              "id": "pd-e41-t3",
+              "task": "See the job logs",
+              "command": "kubectl logs job/busybox",
+              "flashcardId": "pd-34"
+            }
+          ]
+        },
+        {
+          "id": "pd-e42",
+          "section": "Jobs",
+          "title": "Delete the job",
+          "tasks": [
+            {
+              "id": "pd-e42-t1",
+              "task": "Delete the job",
+              "command": "kubectl delete job busybox",
+              "flashcardId": "pd-12"
+            }
+          ]
+        },
+        {
+          "id": "pd-e43",
+          "section": "Jobs",
+          "title": "Create the same job, make it run 5 times, one after the other. Verify its status and delete it",
+          "tasks": [
+            {
+              "id": "pd-e43-t1",
+              "task": "Generate the job YAML without creating it (dry-run)",
+              "command": "kubectl create job busybox --image=busybox --dry-run=client -o yaml -- /bin/sh -c 'echo hello;sleep 30;echo world' > job.yaml",
+              "flashcardId": "cc-03"
+            },
+            {
+              "id": "pd-e43-t2",
+              "task": "Edit the YAML to add completions: 5 (and completionMode: Indexed)",
+              "command": "vi job.yaml",
+              "flashcardId": "pd-35"
+            },
+            {
+              "id": "pd-e43-t3",
+              "task": "Create the job from the manifest",
+              "command": "kubectl create -f job.yaml",
+              "flashcardId": "cc-04"
+            },
+            {
+              "id": "pd-e43-t4",
+              "task": "Watch the job until 5 completions",
+              "command": "kubectl get job busybox -w",
+              "flashcardId": "pd-33"
+            },
+            {
+              "id": "pd-e43-t5",
+              "task": "Delete the job",
+              "command": "kubectl delete jobs busybox",
+              "flashcardId": "pd-12"
+            }
+          ]
+        },
+        {
+          "id": "pd-e44",
+          "section": "Jobs",
+          "title": "Create the same job, but make it run 5 parallel times",
+          "tasks": [
+            {
+              "id": "pd-e44-t1",
+              "task": "Edit the YAML to add parallelism: 5",
+              "command": "vi job.yaml",
+              "flashcardId": "pd-36"
+            },
+            {
+              "id": "pd-e44-t2",
+              "task": "Create the job from the manifest",
+              "command": "kubectl create -f job.yaml",
+              "flashcardId": "cc-04"
+            },
+            {
+              "id": "pd-e44-t3",
+              "task": "Delete the job",
+              "command": "kubectl delete job busybox",
+              "flashcardId": "pd-12"
+            }
+          ]
+        },
+        {
+          "id": "pd-e45",
+          "section": "Jobs",
+          "title": "Create a job but ensure that it will be automatically terminated by kubernetes if it takes more than 30 seconds to execute",
+          "tasks": [
+            {
+              "id": "pd-e45-t1",
+              "task": "Generate the job YAML without creating it (dry-run)",
+              "command": "kubectl create job busybox --image=busybox --dry-run=client -o yaml -- /bin/sh -c 'while true; do echo hello; sleep 10;done' > job.yaml",
+              "flashcardId": "cc-03"
+            },
+            {
+              "id": "pd-e45-t2",
+              "task": "Edit the YAML to add activeDeadlineSeconds: 30 to the job spec",
+              "command": "vi job.yaml",
+              "flashcardId": "pd-37"
+            }
+          ]
+        },
+        {
+          "id": "pd-e46",
+          "section": "Cron jobs",
+          "title": "Create a cron job with image busybox that runs on a schedule of \"*/1 * * * *\" and writes 'date; echo Hello from the Kubernetes cluster' to standard output",
+          "tasks": [
+            {
+              "id": "pd-e46-t1",
+              "task": "Create the cron job imperatively",
+              "command": "kubectl create cronjob busybox --image=busybox --schedule=\"*/1 * * * *\" -- /bin/sh -c 'date; echo Hello from the Kubernetes cluster'",
+              "flashcardId": "pd-38"
+            }
+          ]
+        },
+        {
+          "id": "pd-e47",
+          "section": "Cron jobs",
+          "title": "See its logs and delete it",
+          "tasks": [
+            {
+              "id": "pd-e47-t1",
+              "task": "Read the logs of the pod created by the cron job",
+              "command": "kubectl logs busybox-1529745840-m867r",
+              "flashcardId": "cc-16"
+            },
+            {
+              "id": "pd-e47-t2",
+              "task": "Delete the cron job",
+              "command": "kubectl delete cj busybox",
+              "flashcardId": "pd-12"
+            }
+          ]
+        },
+        {
+          "id": "pd-e48",
+          "section": "Cron jobs",
+          "title": "Create the same cron job again, and watch the status. Once it ran, check which job ran by the created cron job. Check the log, and delete the cron job",
+          "tasks": [
+            {
+              "id": "pd-e48-t1",
+              "task": "List the cron jobs",
+              "command": "kubectl get cj",
+              "flashcardId": "pd-39"
+            },
+            {
+              "id": "pd-e48-t2",
+              "task": "Watch the jobs created by the cron job",
+              "command": "kubectl get jobs --watch",
+              "flashcardId": "pd-33"
+            },
+            {
+              "id": "pd-e48-t3",
+              "task": "See that the pods carry a label naming their parent job",
+              "command": "kubectl get po --show-labels",
+              "flashcardId": "pd-02"
+            },
+            {
+              "id": "pd-e48-t4",
+              "task": "Read the logs of the pod",
+              "command": "kubectl logs busybox-1529745840-m867r",
+              "flashcardId": "cc-16"
+            },
+            {
+              "id": "pd-e48-t5",
+              "task": "Delete the cron job",
+              "command": "kubectl delete cj busybox",
+              "flashcardId": "pd-12"
+            }
+          ]
+        },
+        {
+          "id": "pd-e49",
+          "section": "Cron jobs",
+          "title": "Create a cron job that runs every minute; it should be terminated if it takes more than 17 seconds to start execution after its scheduled time",
+          "tasks": [
+            {
+              "id": "pd-e49-t1",
+              "task": "Generate the cron job YAML without creating it (dry-run)",
+              "command": "kubectl create cronjob time-limited-job --image=busybox --restart=Never --dry-run=client --schedule=\"* * * * *\" -o yaml -- /bin/sh -c 'date; echo Hello from the Kubernetes cluster' > time-limited-job.yaml",
+              "flashcardId": "cc-03"
+            },
+            {
+              "id": "pd-e49-t2",
+              "task": "Edit the YAML to add startingDeadlineSeconds: 17 to the cronjob spec",
+              "command": "vi time-limited-job.yaml",
+              "flashcardId": "pd-40"
+            }
+          ]
+        },
+        {
+          "id": "pd-e50",
+          "section": "Cron jobs",
+          "title": "Create a cron job that runs every minute; it should be terminated if it successfully starts but takes more than 12 seconds to complete execution",
+          "tasks": [
+            {
+              "id": "pd-e50-t1",
+              "task": "Generate the cron job YAML without creating it (dry-run)",
+              "command": "kubectl create cronjob time-limited-job --image=busybox --restart=Never --dry-run=client --schedule=\"* * * * *\" -o yaml -- /bin/sh -c 'date; echo Hello from the Kubernetes cluster' > time-limited-job.yaml",
+              "flashcardId": "cc-03"
+            },
+            {
+              "id": "pd-e50-t2",
+              "task": "Edit the YAML to add activeDeadlineSeconds: 12 at spec.jobTemplate.spec",
+              "command": "vi time-limited-job.yaml",
+              "flashcardId": "pd-37"
+            }
+          ]
+        },
+        {
+          "id": "pd-e51",
+          "section": "Cron jobs",
+          "title": "Create a job from cronjob",
+          "tasks": [
+            {
+              "id": "pd-e51-t1",
+              "task": "Create a one-off job from an existing cron job",
+              "command": "kubectl create job --from=cronjob/sample-cron-job sample-job",
+              "flashcardId": "pd-41"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "configuration",

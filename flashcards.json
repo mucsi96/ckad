@@ -154,5 +154,251 @@
     "category": "Multi-container pods - 10%",
     "frontText": "Add a busybox **init container** that runs `echo \"Test\" > /work-dir/index.html` with a volume mounted at `/work-dir` (edit generated YAML)",
     "backText": "```bash\nvi pod-init.yaml\n```\n\nInit containers go under `spec.initContainers` (same schema as regular containers) and run to completion, in order, **before** the app containers start:\n\n```yaml\nspec:\n  initContainers:\n  - args: [/bin/sh, -c, 'echo \"Test\" > /work-dir/index.html']\n    image: busybox\n    name: box\n    volumeMounts:\n    - name: vol\n      mountPath: /work-dir\n```\n\nCombined with a shared `emptyDir` volume, this is the classic pattern for pre-populating content (e.g. an nginx web root).\n\n[Init Containers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/)"
+  },
+  {
+    "id": "pd-01",
+    "category": "Pod design - 20%",
+    "frontText": "Create 3 pods `nginx1`, `nginx2`, `nginx3`, all with the label `app=v1`",
+    "backText": "```bash\nkubectl run nginx1 --image=nginx --restart=Never --labels=app=v1\n```\n\n`--labels` (short form `-l`) sets labels at creation time. Repeat for each pod, or loop:\n\n```bash\nfor i in $(seq 1 3); do kubectl run nginx$i --image=nginx -l app=v1; done\n```\n\n[Labels and Selectors](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/)"
+  },
+  {
+    "id": "pd-02",
+    "category": "Pod design - 20%",
+    "frontText": "Show all pods **with their labels**",
+    "backText": "```bash\nkubectl get po --show-labels\n```\n\nAdds a LABELS column with every label of every pod — the quickest way to verify labeling operations.\n\n[Labels and Selectors](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/)"
+  },
+  {
+    "id": "pd-03",
+    "category": "Pod design - 20%",
+    "frontText": "Change the label of pod `nginx2` to `app=v2`",
+    "backText": "```bash\nkubectl label po nginx2 app=v2 --overwrite\n```\n\nWithout `--overwrite` kubectl refuses to modify an existing label. Alternative: `kubectl edit po nginx2` and change it in the YAML.\n\n[kubectl label reference](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#label)"
+  },
+  {
+    "id": "pd-04",
+    "category": "Pod design - 20%",
+    "frontText": "List pods with a dedicated **column** showing the value of the `app` label",
+    "backText": "```bash\nkubectl get po -L app\n```\n\n`-L` / `--label-columns` adds one column per listed label key (comma-separated for several).\n\n[Labels and Selectors](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/)"
+  },
+  {
+    "id": "pd-05",
+    "category": "Pod design - 20%",
+    "frontText": "Get only the pods with label `app=v2`",
+    "backText": "```bash\nkubectl get po -l app=v2\n```\n\n`-l` / `--selector` filters by label. Equivalent forms: `--selector=app=v2`, set-based `-l 'app in (v2)'`. Works for any resource type, e.g. `kubectl get rs -l app=nginx`.\n\n[Label selectors](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors)"
+  },
+  {
+    "id": "pd-06",
+    "category": "Pod design - 20%",
+    "frontText": "Get pods with `app=v2` but **not** `tier=frontend`",
+    "backText": "```bash\nkubectl get po -l app=v2,tier!=frontend\n```\n\nComma means AND; `!=` negates. Set-based equivalent: `-l 'app in (v2), tier notin (frontend)'`.\n\n[Label selectors](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors)"
+  },
+  {
+    "id": "pd-07",
+    "category": "Pod design - 20%",
+    "frontText": "Add a new label `tier=web` to **all** pods having label `app=v1` or `app=v2`",
+    "backText": "```bash\nkubectl label po -l \"app in(v1,v2)\" tier=web\n```\n\nSelect the target pods with `-l` (set-based selector), then state the label to add — label many objects with one command.\n\n[kubectl label reference](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#label)"
+  },
+  {
+    "id": "pd-08",
+    "category": "Pod design - 20%",
+    "frontText": "Annotate pods `nginx1`, `nginx2`, `nginx3` with `description='my description'` (or all `app=v2` pods with `owner=marketing`)",
+    "backText": "```bash\nkubectl annotate po nginx1 nginx2 nginx3 description='my description'\n```\n\nShell brace expansion also works: `kubectl annotate po nginx{1..3} ...`. By selector instead of names: `kubectl annotate po -l \"app=v2\" owner=marketing`. Annotations hold non-identifying metadata and cannot be used in selectors.\n\n[Annotations](https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/)"
+  },
+  {
+    "id": "pd-09",
+    "category": "Pod design - 20%",
+    "frontText": "**Remove** the `app` label from pods `nginx1`, `nginx2`, `nginx3`",
+    "backText": "```bash\nkubectl label po nginx{1..3} app-\n```\n\nA trailing `-` after the key removes the label. By selector: `kubectl label po -l app app-` (all pods that have an `app` label).\n\n[kubectl label reference](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#label)"
+  },
+  {
+    "id": "pd-10",
+    "category": "Pod design - 20%",
+    "frontText": "Check the annotations of pod `nginx1`",
+    "backText": "```bash\nkubectl annotate pod nginx1 --list\n```\n\nAlternatives: `kubectl describe po nginx1 | grep -i annotations` or `kubectl get po nginx1 -o jsonpath='{.metadata.annotations}{\"\\n\"}'`.\n\n[Annotations](https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/)"
+  },
+  {
+    "id": "pd-11",
+    "category": "Pod design - 20%",
+    "frontText": "**Remove** the annotations `description` and `owner` from pods `nginx1`, `nginx2`, `nginx3`",
+    "backText": "```bash\nkubectl annotate po nginx{1..3} description- owner-\n```\n\nSame trailing-`-` convention as removing labels; several keys can be removed in one command.\n\n[Annotations](https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/)"
+  },
+  {
+    "id": "pd-12",
+    "category": "Pod design - 20%",
+    "frontText": "Delete several resources with a single command (e.g. pods `nginx1..3`, or a deployment **and** its HPA)",
+    "backText": "```bash\nkubectl delete po nginx{1..3}\n```\n\nList several names of one type, or mix types with the `type/name` form:\n\n```bash\nkubectl delete deploy/nginx hpa/nginx\n```\n\nThe same pattern deletes jobs (`kubectl delete job pi`) and cron jobs (`kubectl delete cj busybox`).\n\n[kubectl delete reference](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#delete)"
+  },
+  {
+    "id": "pd-13",
+    "category": "Pod design - 20%",
+    "frontText": "Label a **node** with `accelerator=nvidia-tesla-p100`",
+    "backText": "```bash\nkubectl label nodes <node-name> accelerator=nvidia-tesla-p100\n```\n\n`kubectl label` works on any resource, nodes included. Verify with `kubectl get nodes --show-labels`.\n\n[Assign Pods to Nodes](https://kubernetes.io/docs/tasks/configure-pod-container/assign-pods-nodes/)"
+  },
+  {
+    "id": "pd-14",
+    "category": "Pod design - 20%",
+    "frontText": "Schedule a pod only on nodes with label `accelerator=nvidia-tesla-p100` using `nodeSelector` (edit YAML)",
+    "backText": "```bash\nvi pod.yaml\n```\n\n`nodeSelector` is the simplest node-selection constraint — a map of labels the node must have:\n\n```yaml\nspec:\n  containers:\n  - name: cuda-test\n    image: \"k8s.gcr.io/cuda-vector-add:v0.1\"\n  nodeSelector:\n    accelerator: nvidia-tesla-p100\n```\n\nFor `kubernetes.io/hostname: <node>` it pins the pod to a specific node (combine with tolerations for control-plane nodes).\n\n[nodeSelector](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector)"
+  },
+  {
+    "id": "pd-15",
+    "category": "Pod design - 20%",
+    "frontText": "Schedule a pod using **node affinity** (required rule matching label `accelerator=nvidia-tesla-p100`) (edit YAML)",
+    "backText": "```bash\nvi pod.yaml\n```\n\nNode affinity is the more expressive alternative to `nodeSelector`:\n\n```yaml\nspec:\n  affinity:\n    nodeAffinity:\n      requiredDuringSchedulingIgnoredDuringExecution:\n        nodeSelectorTerms:\n        - matchExpressions:\n          - key: accelerator\n            operator: In\n            values:\n            - nvidia-tesla-p100\n```\n\n`required...` is a hard rule; `preferred...` is a soft preference.\n\n[Node affinity](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#node-affinity)"
+  },
+  {
+    "id": "pd-16",
+    "category": "Pod design - 20%",
+    "frontText": "Find where a field belongs in a resource's YAML (e.g. where does `nodeSelector` go in a pod spec?)",
+    "backText": "```bash\nkubectl explain po.spec\n```\n\n`kubectl explain` prints the built-in API schema documentation — no internet needed in the exam. Drill down with dotted paths (`kubectl explain po.spec.affinity`) and add `--recursive` to see the whole subtree.\n\n[kubectl explain](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_explain/)"
+  },
+  {
+    "id": "pd-17",
+    "category": "Pod design - 20%",
+    "frontText": "Force a pod onto node `node01`, bypassing the scheduler (edit YAML)",
+    "backText": "```bash\nvi pod.yaml\n```\n\n`nodeName` binds the pod directly to the named node — no scheduling involved:\n\n```yaml\nspec:\n  nodeName: node01\n  containers:\n  - name: nodename-con\n    image: nginx\n```\n\nVerify where it landed: `kubectl get pod nodename-pod -o wide`.\n\n[nodeName](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodename)"
+  },
+  {
+    "id": "pd-18",
+    "category": "Pod design - 20%",
+    "frontText": "Taint a node with key `tier`, value `frontend` and effect `NoSchedule`",
+    "backText": "```bash\nkubectl taint node node1 tier=frontend:NoSchedule\n```\n\nSyntax is `key=value:Effect` (effects: `NoSchedule`, `PreferNoSchedule`, `NoExecute`). View taints with `kubectl describe node node1`; remove by appending `-`: `kubectl taint node node1 tier=frontend:NoSchedule-`.\n\n[Taints and Tolerations](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/)"
+  },
+  {
+    "id": "pd-19",
+    "category": "Pod design - 20%",
+    "frontText": "Create a pod that **tolerates** the taint `tier=frontend:NoSchedule` (edit YAML)",
+    "backText": "```bash\nvi pod.yaml\n```\n\nTolerations go under `spec.tolerations`:\n\n```yaml\nspec:\n  containers:\n  - name: nginx\n    image: nginx\n  tolerations:\n  - key: \"tier\"\n    operator: \"Equal\"\n    value: \"frontend\"\n    effect: \"NoSchedule\"\n```\n\nUse `operator: \"Exists\"` (no value) to tolerate any value of a key — e.g. `key: node-role.kubernetes.io/control-plane` to allow scheduling on control-plane nodes. A toleration only *permits* scheduling; combine with `nodeSelector` to *force* it.\n\n[Taints and Tolerations](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/)"
+  },
+  {
+    "id": "pd-20",
+    "category": "Pod design - 20%",
+    "frontText": "Create a deployment `nginx` with image `nginx:1.18.0`, 2 replicas, container port 80 (no service)",
+    "backText": "```bash\nkubectl create deploy nginx --image=nginx:1.18.0 --replicas=2 --port=80\n```\n\nAll three flags are supported imperatively. Alternatively scaffold with `kubectl create deployment nginx --image=nginx:1.18.0 --dry-run=client -o yaml > deploy.yaml`, edit `replicas` and add `ports: [containerPort: 80]`, then `kubectl apply -f deploy.yaml`.\n\n[Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)"
+  },
+  {
+    "id": "pd-21",
+    "category": "Pod design - 20%",
+    "frontText": "View the YAML of deployment `nginx`",
+    "backText": "```bash\nkubectl get deploy nginx -o yaml\n```\n\nSame `-o yaml` pattern as for pods — works on every resource type (`deploy` is the short name for `deployments`).\n\n[Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)"
+  },
+  {
+    "id": "pd-22",
+    "category": "Pod design - 20%",
+    "frontText": "Find the ReplicaSet created by deployment `nginx` (and view its YAML)",
+    "backText": "```bash\nkubectl get rs -l app=nginx\n```\n\n`kubectl create deploy` labels everything with `app=<name>`. Then `kubectl get rs <rs-name> -o yaml` shows the YAML. You can also spot the ReplicaSet in `kubectl describe deploy nginx` (the `NewReplicaSet` field and Events), or just run `kubectl get rs`.\n\n[ReplicaSet](https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/)"
+  },
+  {
+    "id": "pd-23",
+    "category": "Pod design - 20%",
+    "frontText": "Check how the rollout of deployment `nginx` is going",
+    "backText": "```bash\nkubectl rollout status deploy nginx\n```\n\nBlocks until the rollout succeeds or reports what it is waiting for. If it hangs, `kubectl get po` typically reveals the cause (e.g. `ErrImagePull` / `ImagePullBackOff` after a bad image update).\n\n[Deployment rollout status](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#checking-rollout-status)"
+  },
+  {
+    "id": "pd-24",
+    "category": "Pod design - 20%",
+    "frontText": "Update the image of deployment `nginx` to `nginx:1.19.8`",
+    "backText": "```bash\nkubectl set image deploy nginx nginx=nginx:1.19.8\n```\n\nSyntax: `kubectl set image TYPE NAME CONTAINER_NAME=IMAGE:TAG`. On a deployment this triggers a rolling update and creates a new revision. Alternative: `kubectl edit deploy nginx` and change `.spec.template.spec.containers[0].image`.\n\n[Updating a Deployment](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#updating-a-deployment)"
+  },
+  {
+    "id": "pd-25",
+    "category": "Pod design - 20%",
+    "frontText": "Check the rollout **history** of deployment `nginx` (and the details of revision 4)",
+    "backText": "```bash\nkubectl rollout history deploy nginx\n```\n\nLists all revisions. Details of a single revision (image used, etc.):\n\n```bash\nkubectl rollout history deploy nginx --revision=4\n```\n\n[Checking rollout history](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#checking-rollout-history-of-a-deployment)"
+  },
+  {
+    "id": "pd-26",
+    "category": "Pod design - 20%",
+    "frontText": "Undo the latest rollout of deployment `nginx` (or return to a **specific** revision)",
+    "backText": "```bash\nkubectl rollout undo deploy nginx\n```\n\nRolls back to the previous revision. To go to a specific one:\n\n```bash\nkubectl rollout undo deploy nginx --to-revision=2\n```\n\nVerify with `kubectl describe deploy nginx | grep Image:` and `kubectl rollout status deploy nginx`.\n\n[Rolling back a Deployment](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#rolling-back-a-deployment)"
+  },
+  {
+    "id": "pd-27",
+    "category": "Pod design - 20%",
+    "frontText": "Scale deployment `nginx` to 5 replicas",
+    "backText": "```bash\nkubectl scale deploy nginx --replicas=5\n```\n\nWorks on deployments, replica sets and stateful sets. Verify with `kubectl get po` and `kubectl describe deploy nginx`.\n\n[Scaling a Deployment](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#scaling-a-deployment)"
+  },
+  {
+    "id": "pd-28",
+    "category": "Pod design - 20%",
+    "frontText": "Autoscale deployment `nginx` between 5 and 10 pods, targeting 80% CPU utilization",
+    "backText": "```bash\nkubectl autoscale deploy nginx --min=5 --max=10 --cpu-percent=80\n```\n\nCreates a HorizontalPodAutoscaler. Inspect it with `kubectl get hpa nginx`. Delete it together with the deployment when cleaning up (`kubectl delete deploy/nginx hpa/nginx`).\n\n[Horizontal Pod Autoscaling](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/)"
+  },
+  {
+    "id": "pd-29",
+    "category": "Pod design - 20%",
+    "frontText": "**Pause** the rollout of deployment `nginx`",
+    "backText": "```bash\nkubectl rollout pause deploy nginx\n```\n\nWhile paused, spec changes (e.g. `kubectl set image ...`) are recorded but do **not** trigger a rollout or a new revision — `kubectl rollout history` stays unchanged until you resume.\n\n[Pausing and Resuming a rollout](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#pausing-and-resuming-a-deployment)"
+  },
+  {
+    "id": "pd-30",
+    "category": "Pod design - 20%",
+    "frontText": "**Resume** the paused rollout of deployment `nginx`",
+    "backText": "```bash\nkubectl rollout resume deploy nginx\n```\n\nAll changes accumulated during the pause are rolled out as a single new revision — confirm with `kubectl rollout history deploy nginx` (and `--revision=<latest>`).\n\n[Pausing and Resuming a rollout](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#pausing-and-resuming-a-deployment)"
+  },
+  {
+    "id": "pd-31",
+    "category": "Pod design - 20%",
+    "frontText": "Implement a **canary deployment**: nginx v1 and v2 behind one service, load balanced 75%–25% (edit YAML)",
+    "backText": "```bash\nvi canary.yaml\n```\n\nTwo deployments whose pod templates share a common label (`app: my-app`) but differ in a `version` label; the Service selects **only** the shared label, so it balances across both. The traffic ratio comes from the replica counts (3 × v1, 1 × v2 → 75%–25%):\n\n```yaml\n# deployment my-app-v1: replicas: 3, template labels: {app: my-app, version: v1}\n# deployment my-app-v2: replicas: 1, template labels: {app: my-app, version: v2}\n---\nkind: Service\nspec:\n  selector:\n    app: my-app   # no version -> hits both deployments\n```\n\nPromote by scaling v2 up (`kubectl scale --replicas=4 deploy my-app-v2`) and deleting v1.\n\n[Canary deployments](https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/#canary-deployments)"
+  },
+  {
+    "id": "pd-32",
+    "category": "Pod design - 20%",
+    "frontText": "Create a job named `pi` with image `perl:5.34` that runs `perl -Mbignum=bpi -wle 'print bpi(2000)'`",
+    "backText": "```bash\nkubectl create job pi --image=perl:5.34 -- perl -Mbignum=bpi -wle 'print bpi(2000)'\n```\n\nEverything after `--` is the container command. Same pattern with a shell: `kubectl create job busybox --image=busybox -- /bin/sh -c 'echo hello;sleep 30;echo world'`. Add `--dry-run=client -o yaml > job.yaml` to scaffold the YAML for editing.\n\n[Jobs](https://kubernetes.io/docs/concepts/workloads/controllers/job/)"
+  },
+  {
+    "id": "pd-33",
+    "category": "Pod design - 20%",
+    "frontText": "Watch a job until it completes (or block until it is done)",
+    "backText": "```bash\nkubectl get jobs -w\n```\n\n`-w` watches the COMPLETIONS column live. To block in a script until the job finishes:\n\n```bash\nkubectl wait --for=condition=complete --timeout=300s job pi\n```\n\n[Jobs](https://kubernetes.io/docs/concepts/workloads/controllers/job/)"
+  },
+  {
+    "id": "pd-34",
+    "category": "Pod design - 20%",
+    "frontText": "Get the logs of a job **without looking up its pod name**",
+    "backText": "```bash\nkubectl logs job/pi\n```\n\n`kubectl logs` accepts `job/<name>` and resolves the job's pod for you — faster than `kubectl get po` + `kubectl logs <pod>`.\n\n[Jobs](https://kubernetes.io/docs/concepts/workloads/controllers/job/)"
+  },
+  {
+    "id": "pd-35",
+    "category": "Pod design - 20%",
+    "frontText": "Make a job run **5 times, one after the other** (edit YAML)",
+    "backText": "```bash\nvi job.yaml\n```\n\nSet `completions` on the job spec (optionally with Indexed mode):\n\n```yaml\nspec:\n  completions: 5\n  completionMode: Indexed\n  template:\n    ...\n```\n\nThe job runs pods sequentially until 5 of them succeed. Watch with `kubectl get job busybox -w`.\n\n[Job completions](https://kubernetes.io/docs/concepts/workloads/controllers/job/#parallel-jobs)"
+  },
+  {
+    "id": "pd-36",
+    "category": "Pod design - 20%",
+    "frontText": "Make a job run **5 pods in parallel** (edit YAML)",
+    "backText": "```bash\nvi job.yaml\n```\n\nSet `parallelism` on the job spec:\n\n```yaml\nspec:\n  parallelism: 5\n  template:\n    ...\n```\n\nFive pods start at once. Combine with `completions` for \"N successes, M at a time\".\n\n[Parallel Jobs](https://kubernetes.io/docs/concepts/workloads/controllers/job/#parallel-jobs)"
+  },
+  {
+    "id": "pd-37",
+    "category": "Pod design - 20%",
+    "frontText": "Terminate a job automatically if it runs for more than 30 seconds (edit YAML)",
+    "backText": "```bash\nvi job.yaml\n```\n\nSet `activeDeadlineSeconds` on the **job** spec (not the pod spec):\n\n```yaml\nspec:\n  activeDeadlineSeconds: 30\n  template:\n    ...\n```\n\nKubernetes kills the job's pods and marks the job `DeadlineExceeded` once the deadline passes. For jobs created by a CronJob, put it at `cronjob.spec.jobTemplate.spec.activeDeadlineSeconds`.\n\n[Job termination and cleanup](https://kubernetes.io/docs/concepts/workloads/controllers/job/#job-termination-and-cleanup)"
+  },
+  {
+    "id": "pd-38",
+    "category": "Pod design - 20%",
+    "frontText": "Create a cron job `busybox` that runs every minute and prints the date plus 'Hello from the Kubernetes cluster'",
+    "backText": "```bash\nkubectl create cronjob busybox --image=busybox --schedule=\"*/1 * * * *\" -- /bin/sh -c 'date; echo Hello from the Kubernetes cluster'\n```\n\n`--schedule` takes standard cron syntax. Add `--dry-run=client -o yaml > cj.yaml` to scaffold the YAML for editing (e.g. to add deadlines).\n\n[Running Automated Tasks with a CronJob](https://kubernetes.io/docs/tasks/job/automated-tasks-with-cron-jobs/)"
+  },
+  {
+    "id": "pd-39",
+    "category": "Pod design - 20%",
+    "frontText": "List cron jobs",
+    "backText": "```bash\nkubectl get cj\n```\n\n`cj` is the short name for `cronjob`. Each firing creates a **Job**, which creates a **Pod** — watch them appear with `kubectl get jobs --watch`, and note that the pods carry a label naming their parent job (`kubectl get po --show-labels`).\n\n[CronJob](https://kubernetes.io/docs/concepts/workloads/controllers/cron-job/)"
+  },
+  {
+    "id": "pd-40",
+    "category": "Pod design - 20%",
+    "frontText": "Make a cron job's run be skipped/terminated if it misses its scheduled start by more than 17 seconds (edit YAML)",
+    "backText": "```bash\nvi time-limited-job.yaml\n```\n\nSet `startingDeadlineSeconds` on the **cronjob** spec:\n\n```yaml\nspec:\n  startingDeadlineSeconds: 17\n  schedule: '* * * * *'\n  jobTemplate:\n    ...\n```\n\nIf the job cannot start within 17 s after its scheduled time, that run counts as missed.\n\n[CronJob - starting deadline](https://kubernetes.io/docs/concepts/workloads/controllers/cron-job/#starting-deadline)"
+  },
+  {
+    "id": "pd-41",
+    "category": "Pod design - 20%",
+    "frontText": "Trigger a cron job **manually** — create a job from an existing cron job",
+    "backText": "```bash\nkubectl create job --from=cronjob/sample-cron-job sample-job\n```\n\n`--from=cronjob/<name>` copies the cron job's job template into a one-off job that runs immediately.\n\n[Running Automated Tasks with a CronJob](https://kubernetes.io/docs/tasks/job/automated-tasks-with-cron-jobs/)"
   }
 ]
