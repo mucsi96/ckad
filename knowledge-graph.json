@@ -174,7 +174,7 @@
               "id": "cc-e10-t2",
               "task": "Extract the pod IP with jsonpath",
               "command": "kubectl get pod nginx -o jsonpath='{.status.podIP}'",
-              "flashcardId": "cc-12"
+              "flashcardId": "cc-23"
             },
             {
               "id": "cc-e10-t3",
@@ -476,7 +476,7 @@
               "id": "pd-e08-t1",
               "task": "Annotate all pods matching a label selector",
               "command": "kubectl annotate po -l \"app=v2\" owner=marketing",
-              "flashcardId": "pd-08"
+              "flashcardId": "pd-42"
             }
           ]
         },
@@ -629,13 +629,13 @@
               "id": "pd-e17-t1",
               "task": "Edit the pod YAML to add nodeSelector kubernetes.io/hostname: controlplane",
               "command": "vi pod.yaml",
-              "flashcardId": "pd-14"
+              "flashcardId": "pd-44"
             },
             {
               "id": "pd-e17-t2",
               "task": "Edit the pod YAML to tolerate the control-plane taint (operator Exists)",
               "command": "vi pod.yaml",
-              "flashcardId": "pd-19"
+              "flashcardId": "pd-47"
             },
             {
               "id": "pd-e17-t3",
@@ -686,7 +686,7 @@
               "id": "pd-e20-t2",
               "task": "Get the replica set YAML",
               "command": "kubectl get rs nginx-7bf7478b77 -o yaml",
-              "flashcardId": "pd-22"
+              "flashcardId": "pd-49"
             }
           ]
         },
@@ -808,7 +808,7 @@
               "id": "pd-e28-t1",
               "task": "Roll back to a specific revision",
               "command": "kubectl rollout undo deploy nginx --to-revision=2",
-              "flashcardId": "pd-26"
+              "flashcardId": "pd-51"
             },
             {
               "id": "pd-e28-t2",
@@ -827,7 +827,7 @@
               "id": "pd-e29-t1",
               "task": "View the details of a specific rollout revision",
               "command": "kubectl rollout history deploy nginx --revision=4",
-              "flashcardId": "pd-25"
+              "flashcardId": "pd-50"
             }
           ]
         },
@@ -910,7 +910,7 @@
               "id": "pd-e34-t2",
               "task": "Check the latest revision in the rollout history",
               "command": "kubectl rollout history deploy nginx --revision=6",
-              "flashcardId": "pd-25"
+              "flashcardId": "pd-50"
             }
           ]
         },
@@ -923,7 +923,7 @@
               "id": "pd-e35-t1",
               "task": "Delete the deployment and the HPA with one command",
               "command": "kubectl delete deploy/nginx hpa/nginx",
-              "flashcardId": "pd-12"
+              "flashcardId": "pd-43"
             }
           ]
         },
@@ -992,7 +992,7 @@
               "id": "pd-e38-t1",
               "task": "Wait for the job to complete",
               "command": "kubectl wait --for=condition=complete --timeout=300s job pi",
-              "flashcardId": "pd-33"
+              "flashcardId": "pd-53"
             },
             {
               "id": "pd-e38-t2",
