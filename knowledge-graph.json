@@ -23,7 +23,7 @@
             {
               "id": "cc-e01-t2",
               "task": "Create a pod named nginx with image nginx in namespace mynamespace",
-              "command": "kubectl run nginx --image=nginx --restart=Never -n mynamespace",
+              "command": "kubectl run nginx --image=nginx -n mynamespace",
               "flashcardId": "cc-02"
             }
           ]
@@ -35,7 +35,7 @@
             {
               "id": "cc-e02-t1",
               "task": "Generate pod YAML without creating the pod (dry-run)",
-              "command": "kubectl run nginx --image=nginx --restart=Never --dry-run=client -n mynamespace -o yaml > pod.yaml",
+              "command": "kubectl run nginx --image=nginx --dry-run=client -n mynamespace -o yaml > pod.yaml",
               "flashcardId": "cc-03"
             },
             {
@@ -125,7 +125,7 @@
             {
               "id": "cc-e08-t1",
               "task": "Create a pod declaring container port 80",
-              "command": "kubectl run nginx --image=nginx --restart=Never --port=80",
+              "command": "kubectl run nginx --image=nginx --port=80",
               "flashcardId": "cc-09"
             }
           ]
@@ -275,7 +275,7 @@
             {
               "id": "cc-e18-t1",
               "task": "Create a pod with an environment variable",
-              "command": "kubectl run nginx --image=nginx --restart=Never --env=var1=val1",
+              "command": "kubectl run nginx --image=nginx --env=var1=val1",
               "flashcardId": "cc-21"
             },
             {
@@ -332,7 +332,7 @@
             {
               "id": "mc-e02-t1",
               "task": "Generate a base pod YAML with container port 80 (dry-run)",
-              "command": "kubectl run box --image=nginx --restart=Never --port=80 --dry-run=client -o yaml > pod-init.yaml",
+              "command": "kubectl run box --image=nginx --port=80 --dry-run=client -o yaml > pod-init.yaml",
               "flashcardId": "cc-03"
             },
             {
@@ -384,7 +384,7 @@
             {
               "id": "pd-e01-t1",
               "task": "Create pods nginx1, nginx2, nginx3 with label app=v1",
-              "command": "kubectl run nginx1 --image=nginx --restart=Never --labels=app=v1",
+              "command": "kubectl run nginx1 --image=nginx --labels=app=v1",
               "flashcardId": "pd-01"
             }
           ]
