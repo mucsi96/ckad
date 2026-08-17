@@ -9,13 +9,13 @@
     "id": "cc-02",
     "category": "Core Concepts - 13%",
     "frontText": "Create a pod named `nginx` with image `nginx` in namespace `mynamespace`",
-    "backText": "```bash\nkubectl run nginx --image=nginx --restart=Never -n mynamespace\n```\n\n`kubectl run` creates a single pod. `--restart=Never` ensures a plain Pod is created (not a Deployment). `-n` selects the namespace.\n\n[kubectl run reference](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#run)"
+    "backText": "```bash\nkubectl run nginx --image=nginx -n mynamespace\n```\n\nSince Kubernetes v1.18, `kubectl run` **only creates a Pod** — before that it could also generate Deployments or Jobs, which is why older material adds `--restart=Never`. That flag is no longer needed here. For a Deployment use `kubectl create deployment` instead. `-n` selects the namespace.\n\n[kubectl run reference](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#run)"
   },
   {
     "id": "cc-03",
     "category": "Core Concepts - 13%",
     "frontText": "Generate the YAML for a pod (image `nginx`, name `nginx`) **without creating it**, and save it to `pod.yaml`",
-    "backText": "```bash\nkubectl run nginx --image=nginx --restart=Never --dry-run=client -o yaml > pod.yaml\n```\n\n`--dry-run=client -o yaml` prints the manifest without submitting it to the cluster — the standard way to scaffold YAML in the exam. To include a command in the generated spec, append `--command -- env`. You can also pipe straight to creation: `... -o yaml | kubectl create -n mynamespace -f -`.\n\n[kubectl conventions (--dry-run)](https://kubernetes.io/docs/reference/kubectl/conventions/)"
+    "backText": "```bash\nkubectl run nginx --image=nginx --dry-run=client -o yaml > pod.yaml\n```\n\n`--dry-run=client -o yaml` prints the manifest without submitting it to the cluster — the standard way to scaffold YAML in the exam. To include a command in the generated spec, append `--command -- env`. You can also pipe straight to creation: `... -o yaml | kubectl create -n mynamespace -f -`.\n\n[kubectl conventions (--dry-run)](https://kubernetes.io/docs/reference/kubectl/conventions/)"
   },
   {
     "id": "cc-04",
@@ -27,7 +27,7 @@
     "id": "cc-05",
     "category": "Core Concepts - 13%",
     "frontText": "Create a `busybox` pod that runs the command `env`",
-    "backText": "```bash\nkubectl run busybox --image=busybox --command --restart=Never -- env\n```\n\n`--command` makes everything after `--` the container's *command* (entrypoint) instead of its *args*. Add `-it --rm` to see the output directly and delete the pod afterwards, or check the output with `kubectl logs busybox`.\n\n[Define a command and arguments for a container](https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/)"
+    "backText": "```bash\nkubectl run busybox --image=busybox --command --restart=Never -- env\n```\n\n`--command` makes everything after `--` the container's *command* (entrypoint) instead of its *args*. `--restart=Never` sets the pod's `restartPolicy` — without it (default `Always`) the container would be restarted over and over after `env` exits. It has nothing to do with Deployments: since v1.18 `kubectl run` only creates Pods. Add `-it --rm` to see the output directly and delete the pod afterwards, or check the output with `kubectl logs busybox`.\n\n[Define a command and arguments for a container](https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/)"
   },
   {
     "id": "cc-06",
@@ -51,7 +51,7 @@
     "id": "cc-09",
     "category": "Core Concepts - 13%",
     "frontText": "Create a pod with image `nginx` called `nginx`, exposing (declaring) container port 80",
-    "backText": "```bash\nkubectl run nginx --image=nginx --restart=Never --port=80\n```\n\n`--port` sets `containerPort: 80` in the pod spec. It documents the port the container listens on; it does not create a Service.\n\n[kubectl run reference](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#run)"
+    "backText": "```bash\nkubectl run nginx --image=nginx --port=80\n```\n\n`--port` sets `containerPort: 80` in the pod spec. It documents the port the container listens on; it does not create a Service.\n\n[kubectl run reference](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#run)"
   },
   {
     "id": "cc-10",
@@ -117,19 +117,19 @@
     "id": "cc-19",
     "category": "Core Concepts - 13%",
     "frontText": "Run a **temporary** interactive busybox pod (deleted automatically when it exits) that runs `wget -O- 10.1.1.131:80`",
-    "backText": "```bash\nkubectl run busybox --image=busybox --rm -it --restart=Never -- wget -O- 10.1.1.131:80\n```\n\n`--rm` deletes the pod right after it exits; `-it` shows the output interactively. Ideal for one-off connectivity checks and throwaway commands, e.g. `-- /bin/sh -c 'echo hello world'`.\n\n[kubectl run reference](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#run)"
+    "backText": "```bash\nkubectl run busybox --image=busybox --rm -it --restart=Never -- wget -O- 10.1.1.131:80\n```\n\n`--rm` deletes the pod right after it exits; `-it` shows the output interactively; `--restart=Never` sets `restartPolicy: Never` so the pod actually terminates when the command finishes (needed for `--rm` to kick in). Ideal for one-off connectivity checks and throwaway commands, e.g. `-- /bin/sh -c 'echo hello world'`.\n\n[kubectl run reference](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#run)"
   },
   {
     "id": "cc-20",
     "category": "Core Concepts - 13%",
     "frontText": "Create a busybox pod that echoes 'hello world' and then exits, showing the output",
-    "backText": "```bash\nkubectl run busybox --image=busybox -it --restart=Never -- echo 'hello world'\n```\n\nEverything after `--` (without `--command`) becomes the container's *args*, passed to the image's default entrypoint. Also valid: `-- /bin/sh -c 'echo hello world'`.\n\n[Define a command and arguments for a container](https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/)"
+    "backText": "```bash\nkubectl run busybox --image=busybox -it --restart=Never -- echo 'hello world'\n```\n\nEverything after `--` (without `--command`) becomes the container's *args*, passed to the image's default entrypoint. `--restart=Never` sets the pod's `restartPolicy` so it completes instead of being restarted after the echo exits. Also valid: `-- /bin/sh -c 'echo hello world'`.\n\n[Define a command and arguments for a container](https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/)"
   },
   {
     "id": "cc-21",
     "category": "Core Concepts - 13%",
     "frontText": "Create an `nginx` pod with the environment variable `var1=val1`",
-    "backText": "```bash\nkubectl run nginx --image=nginx --restart=Never --env=var1=val1\n```\n\n`--env=KEY=VALUE` can be repeated for multiple variables. Verify with `kubectl exec -it nginx -- sh -c 'echo $var1'` or `kubectl describe po nginx | grep val1`.\n\n[Define Environment Variables for a Container](https://kubernetes.io/docs/tasks/inject-data-application/define-environment-variable-container/)"
+    "backText": "```bash\nkubectl run nginx --image=nginx --env=var1=val1\n```\n\n`--env=KEY=VALUE` can be repeated for multiple variables. Verify with `kubectl exec -it nginx -- sh -c 'echo $var1'` or `kubectl describe po nginx | grep val1`.\n\n[Define Environment Variables for a Container](https://kubernetes.io/docs/tasks/inject-data-application/define-environment-variable-container/)"
   },
   {
     "id": "cc-22",
@@ -189,7 +189,7 @@
     "id": "pd-01",
     "category": "Pod design - 20%",
     "frontText": "Create a pod `nginx1` with image `nginx` and the label `app=v1`",
-    "backText": "```bash\nkubectl run nginx1 --image=nginx --restart=Never -l app=v1\n```\n\n`-l` / `--labels` sets labels at creation time. To create several such pods, loop:\n\n```bash\nfor i in $(seq 1 3); do kubectl run nginx$i --image=nginx -l app=v1; done\n```\n\n[Labels and Selectors](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/)"
+    "backText": "```bash\nkubectl run nginx1 --image=nginx -l app=v1\n```\n\n`-l` / `--labels` sets labels at creation time. To create several such pods, loop:\n\n```bash\nfor i in $(seq 1 3); do kubectl run nginx$i --image=nginx -l app=v1; done\n```\n\n[Labels and Selectors](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/)"
   },
   {
     "id": "pd-02",
