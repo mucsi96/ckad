@@ -61,6 +61,7 @@ Flashcards and a knowledge graph for [CKAD](https://www.cncf.io/certification/ck
 >   - concept question → a short one-line fact (e.g. "No — it only permits scheduling there").
 > - The front must contain every concrete value the answer needs (names, images, labels, numbers) so exactly one answer is correct.
 > - Deduplicate across exercises via the knowledge graph's `flashcardId`. Keep existing card ids stable; new cards continue the category's numbering (`cc-`, `mc-`, `pd-`, …).
+> - Target **Kubernetes v1.35** (current kubectl and APIs). Do not copy legacy idioms from older tutorials or the source exercises — e.g. `kubectl run` creates only a Pod since v1.18 (never a Deployment or Job), so `--restart=Never` is not needed to get a plain Pod (use it only to set `restartPolicy` on one-shot command pods, and use `kubectl create deployment` / `kubectl create job` for those resources); use `--dry-run=client` (not bare `--dry-run`), and never use removed flags like `--generator`, or `--replicas`/`--serviceaccount`/`--limits`/`--requests` on `kubectl run`. Prefer current API versions and field names throughout.
 
 Expected JSON schema:
 
